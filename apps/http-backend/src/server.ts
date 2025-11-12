@@ -1,6 +1,7 @@
 import cluster from "node:cluster"
 import os from "node:os"
 import { app, port } from "./index";
+import { logInfo } from "@repo/logger";
 
 const totalCpus = os.cpus().length;
 
@@ -13,7 +14,6 @@ if(cluster.isPrimary){
     })
 }else{
     app.listen(port,()=>{
-        
-        console.log(`Server running on port ${port}`)
+        logInfo(`Server running on port ${port}`)
     })
 }

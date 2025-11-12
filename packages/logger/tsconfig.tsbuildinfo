@@ -1,1 +1,1 @@
-{"root":["./src/index.ts","./src/logger.ts"],"version":"5.9.2"}
+{"root":["./src/error.ts","./src/index.ts","./src/logger.ts"],"version":"5.9.2"}

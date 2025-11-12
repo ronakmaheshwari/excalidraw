@@ -1,6 +1,8 @@
 import express, {Request, Response, type Express} from "express"
 import morgan from "morgan"
 import dotenv from "dotenv";
+import { logError, logInfo } from "@repo/logger";
+import { ApiError } from "@repo/logger/error";
 dotenv.config();
 
 const app:Express = express();
@@ -11,8 +13,10 @@ app.use(morgan("dev"));
 app.get("/health",(req:Request,res:Response)=>{
     try {
         return res.status(200).send(`<h1>Hello world!!</h1>`)
+        logInfo("HEALTH Route was hit successfully");
     } catch (error) {
-        console.error(`[HTTP Health]: ${error}`)
+        logError(500,`Internal error occured ${error}`)
+        throw ApiError.internal();
     }
 })
 
