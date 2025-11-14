@@ -1,0 +1,65 @@
+services:
+  postgres:
+    image: postgres:16.3
+    restart: unless-stopped
+    environment:
+      POSTGRES_PASSWORD: mysecretpassword
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql:rw
+    networks:
+      - monitoring
+  backend:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.http
+    restart: unless-stopped
+    env_file:
+      - ./apps/http-backend/.env
+    environment:
+      - DATABASE_URL=postgresql://postgres:mysecretpassword@postgres:5432/postgres
+    ports:
+      - "3001:3000"
+    depends_on:
+      - postgres
+    networks:
+      - monitoring
+  ws:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.ws
+    restart: unless-stopped
+    env_file:
+      - ./apps/ws-backend/.env
+    environment:
+      - DATABASE_URL=postgresql://postgres:mysecretpassword@postgres:5432/postgres
+    ports:
+      - "3002:3000"
+    depends_on:
+      - postgres
+    networks:
+      - monitoring
+  frontend:
+    build:
+      context: .
+      dockerfile: docker/Dockerfile.web
+      args:
+        DB_URL: postgresql://postgres:mysecretpassword@postgres:5432/postgres
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./apps/web/.env
+    environment:
+      - DATABASE_URL=postgresql://postgres:mysecretpassword@postgres:5432/postgres
+    depends_on:
+      - postgres
+    networks:
+      - monitoring
+
+volumes:
+  pgdata:
+
+networks:
+  monitoring:

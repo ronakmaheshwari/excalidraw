@@ -6,7 +6,7 @@ WORKDIR /usr/src/app
 RUN corepack enable && corepack prepare pnpm@latest --activate
 
 # Copy the manifest files
-COPY ./package.json pnpm-*.json turbo.json ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml turbo.json ./
 
 # Copy workspace manifest files 
 COPY ./packages ./packages
@@ -17,7 +17,7 @@ COPY ./apps/web/tsconfig.json ./apps/web/
 
 # ---------------- Dependencies Stage ----------------
 FROM base AS deps
-RUN pnpm install --frozen-lockfile
+RUN pnpm install 
 
 # Copy the source code 
 COPY ./apps/web ./apps/web
@@ -34,7 +34,7 @@ RUN corepack enable && corepack prepare pnpm@latest --activate
 
 COPY --from=deps /usr/src/app/node_modules ./node_modules
 COPY --from=build /usr/src/app/apps/web/package*.json ./apps/web/
-COPY --from=build /usr/src/apps/web/.next  ./apps/web/.next
+COPY --from=build /usr/src/app/apps/web/.next ./apps/web/.next
 
 EXPOSE 3000
 

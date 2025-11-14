@@ -15,7 +15,7 @@ COPY ./apps/ws-backend/tsconfig.json ./apps/ws-backend/tsconfig.json
 
 #-------------- Dependencies Stage -------------
 FROM base AS deps
-RUN pnpm install --frozen-lockfile
+RUN pnpm install
 
 #-------------- Build Stage -------------
 FROM deps AS build

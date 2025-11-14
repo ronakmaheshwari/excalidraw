@@ -15,7 +15,7 @@ COPY ./apps/http-backend/package.json ./apps/http-backend/package.json
 
 #----Dependencies Stage-------
 FROM base AS deps
-RUN pnpm install --frozen-lockfile
+RUN pnpm install 
 
 #----- Build Stage -----
 COPY ./apps/http-backend ./apps/http-backend
@@ -29,7 +29,7 @@ RUN pnpm turbo run build --filter=apps/http-backend...
 FROM node:20-alpine AS prod
 WORKDIR /usr/src/app
 
-RUN corepack activate && corepack prepare pnpm@latest --activate
+RUN corepack enable && corepack prepare pnpm@latest --activate
 
 # ----- Copy runtine dependencies -------
 COPY --from=deps /usr/src/app/node_modules ./node_modules
