@@ -11,6 +11,7 @@
     "lint": "turbo run lint",
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "check-types": "turbo run check-types",
+    "generate:db": "cd packages/db && npx prisma generate",
     "start:frontend":"cd apps/web && npm run dev",
     "start:backend": "cd apps/http-backend && npm run dev",
     "start:ws": "cd apps/ws-backend && npm run dev"
