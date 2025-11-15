@@ -3,6 +3,7 @@ import dotenv from "dotenv"
 import { ApiError } from "@repo/logger/error"
 import { NextFunction, Request, Response } from "express"
 import { logError } from "@repo/logger"
+import { jwtSecret } from "@repo/common/config"
 
 dotenv.config()
 
@@ -10,18 +11,17 @@ declare global {
     namespace Express {
         interface Request {
             userId?: string;
-            organiserId?: string;
             token?: string;
         }
     }
 }
 
-const jwtSecret = process.env.JWT_SECRET
-
 if(!jwtSecret){
     logError(500,"JWT Secret was not provided in HTTP backend");
     throw ApiError.internal(`JWT_SECRET KEY was not provided`);
 }
+
+const jwtsecret = jwtSecret;
 
 export default async function userMiddleware(req:Request,res:Response,next:NextFunction) {
     try {
@@ -32,14 +32,14 @@ export default async function userMiddleware(req:Request,res:Response,next:NextF
         }
         const token = authHeader.split(" ")[1];
 
-        if(!token || !jwtSecret){
+        if(!token || !jwtsecret){
             logError(404,"Unauthroized user tried to access");
             throw ApiError.unauthorized();
         }
 
         let decoded:JwtPayload;
         try {
-            decoded = jwt.verify(token, jwtSecret) as JwtPayload;
+            decoded = jwt.verify(token, jwtsecret) as JwtPayload;
         }catch(error){
             logError(404,"Unauthroized user tried to access");
             throw ApiError.unauthorized();

@@ -16,7 +16,6 @@ userRouter.post("/signup",async(req:Request,res:Response)=>{
             throw new ApiError(400,pretty);
         }
         const {name,email,password} = parsedData.data;
-        const findEmail = "";
 
     } catch (error) {
         logError(500,`[USER SIGNUP]: error taken place ${error}`)

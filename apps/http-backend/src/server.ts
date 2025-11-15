@@ -1,7 +1,7 @@
 import cluster from "node:cluster"
 import os from "node:os"
-import { app, port } from "./index";
 import { logInfo } from "@repo/logger";
+import { app, port } from "./index.js";
 
 const totalCpus = os.cpus().length;
 

@@ -17,6 +17,7 @@
   "license": "ISC",
   "type": "module",
   "dependencies": {
+    "@repo/common":"workspace:*",
     "@repo/logger": "workspace:*",
     "@repo/types": "workspace:*",
     "@types/bcrypt": "^6.0.0",

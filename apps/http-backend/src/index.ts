@@ -3,7 +3,8 @@ import morgan from "morgan"
 import dotenv from "dotenv";
 import { logError, logInfo } from "@repo/logger";
 import { ApiError } from "@repo/logger/error";
-import router from "./routes";
+import router from "./routes/index.js";
+
 dotenv.config();
 
 const app:Express = express();

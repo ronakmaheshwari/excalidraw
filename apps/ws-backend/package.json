@@ -17,9 +17,13 @@
   "license": "ISC",
   "type": "commonjs",
   "dependencies": {
+    "@repo/common":"workspace:*",
     "@repo/logger": "workspace:*",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^22.15.3",
     "@types/ws": "^8.18.1",
+    "dotenv": "^17.2.3",
+    "jsonwebtoken": "^9.0.2",
     "ws": "^8.18.3"
   }
 }
