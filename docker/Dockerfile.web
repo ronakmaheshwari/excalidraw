@@ -1,18 +1,58 @@
-FROM node:20-alpine
+# FROM node:20-alpine
+# WORKDIR /app
+
+# RUN corepack enable && corepack prepare pnpm@latest --activate
+
+# COPY ./package.json ./
+# COPY ./pnpm-lock.yaml ./
+# COPY ./pnpm-workspace.yaml ./
+# COPY ./turbo.json ./
+# COPY ./packages ./packages
+# COPY ./apps/web ./apps/web
+
+# RUN pnpm install
+# RUN npm run generate:db
+# RUN DB_URL=$DB_URL pnpm turbo build --filter=web...
+
+# EXPOSE 3000
+# CMD ["npm","run","start:frontend"]
+
+# -----------------------------
+# 1. BUILDER STAGE
+# -----------------------------
+FROM node:20-alpine AS builder
 WORKDIR /app
 
 RUN corepack enable && corepack prepare pnpm@latest --activate
 
-COPY ./package.json ./
-COPY ./pnpm-lock.yaml ./
-COPY ./pnpm-workspace.yaml ./
-COPY ./turbo.json ./
-COPY ./packages ./packages
-COPY ./apps/web ./apps/web
+# Copy root config
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml turbo.json ./
 
-RUN pnpm install
-RUN npm run generate:db
-RUN DB_URL=$DB_URL pnpm turbo build --filter=web...
+# Copy only what we need
+COPY packages ./packages
+COPY apps/web ./apps/web
+
+# Install dependencies
+RUN pnpm install 
+# Build ONLY the frontend
+RUN pnpm turbo build --filter=web...
+
+
+# -----------------------------
+# 2. RUNTIME STAGE
+# -----------------------------
+FROM node:20-alpine AS runner
+WORKDIR /app
+
+RUN corepack enable && corepack prepare pnpm@latest --activate
+
+# Copy built output
+COPY --from=builder /app/apps/web/.next ./.next
+COPY --from=builder /app/apps/web/public ./public
+COPY --from=builder /app/apps/web/package.json ./package.json
+
+# Copy the production node_modules from builder
+COPY --from=builder /app/node_modules ./node_modules
 
 EXPOSE 3000
-CMD ["npm","run","start:ws"]
+CMD ["pnpm", "start"]

@@ -8,3 +8,9 @@ export const jwtSecret = process.env.JWT_SECRET
 if(!jwtSecret){
     logError(500,"JWT Secret was not provided")
 }
+
+export const saltround = process.env.SALTROUND
+
+if(!saltround){
+    logError(500,"Salt round was not provided")
+}

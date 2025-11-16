@@ -8,7 +8,7 @@ COPY ./pnpm-lock.yaml ./
 COPY ./pnpm-workspace.yaml  ./
 COPY ./turbo.json ./
 COPY ./packages ./packages
-COPY ./apps/http-backend ./apps/http
+COPY ./apps/http-backend ./apps/http-backend
 
 RUN pnpm install
 
