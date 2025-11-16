@@ -1,44 +1,18 @@
-# ---------------- Base Stage ----------------
-FROM node:20-alpine AS base
-WORKDIR /usr/src/app
+FROM node:20-alpine
+WORKDIR /app
 
-# Install pnpm globally 
 RUN corepack enable && corepack prepare pnpm@latest --activate
 
-# Copy the manifest files
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml turbo.json ./
-
-# Copy workspace manifest files 
+COPY ./package.json ./
+COPY ./pnpm-lock.yaml ./
+COPY ./pnpm-workspace.yaml ./
+COPY ./turbo.json ./
 COPY ./packages ./packages
-COPY ./apps/web/package*.json ./apps/web/
-COPY ./apps/web/next.config.js ./apps/web/
-COPY ./apps/web/eslint.config.js ./apps/web/
-COPY ./apps/web/tsconfig.json ./apps/web/
-
-# ---------------- Dependencies Stage ----------------
-FROM base AS deps
-RUN pnpm install 
-
-# Copy the source code 
 COPY ./apps/web ./apps/web
 
-# --------------- Build Stage ---------------
-FROM deps AS build
-RUN pnpm turbo run build --filter=apps/web...
-
-# --------------- Production Stage ---------------
-FROM node:20-alpine AS prod
-WORKDIR /usr/src/app
-
-RUN corepack enable && corepack prepare pnpm@latest --activate
-
-COPY --from=deps /usr/src/app/node_modules ./node_modules
-COPY --from=build /usr/src/app/apps/web/package*.json ./apps/web/
-COPY --from=build /usr/src/app/apps/web/.next ./apps/web/.next
+RUN pnpm install
+RUN npm run generate:db
+RUN DB_URL=$DB_URL pnpm turbo build --filter=web...
 
 EXPOSE 3000
-
-RUN addgroup -S app && adduser -S user -G app
-USER user
-
-CMD [ "npm","run","start:frontnd" ]
+CMD ["npm","run","start:ws"]

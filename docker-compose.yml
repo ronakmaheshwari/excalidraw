@@ -18,7 +18,7 @@ services:
     env_file:
       - ./apps/http-backend/.env
     environment:
-      - DATABASE_URL=postgresql://postgres:mysecretpassword@postgres:5432/postgres
+      - DATABASE_URL=postgresql://postgres:mysecretpassword@postgres:5432/excalidraw
     ports:
       - "3001:3000"
     depends_on:
@@ -33,7 +33,7 @@ services:
     env_file:
       - ./apps/ws-backend/.env
     environment:
-      - DATABASE_URL=postgresql://postgres:mysecretpassword@postgres:5432/postgres
+      - DATABASE_URL=postgresql://postgres:mysecretpassword@postgres:5432/excalidraw
     ports:
       - "3002:3000"
     depends_on:
@@ -45,14 +45,14 @@ services:
       context: .
       dockerfile: docker/Dockerfile.web
       args:
-        DB_URL: postgresql://postgres:mysecretpassword@postgres:5432/postgres
+        DB_URL: postgresql://postgres:mysecretpassword@postgres:5432/excalidraw
     restart: unless-stopped
     ports:
       - "3000:3000"
     env_file:
       - ./apps/web/.env
     environment:
-      - DATABASE_URL=postgresql://postgres:mysecretpassword@postgres:5432/postgres
+      - DATABASE_URL=postgresql://postgres:mysecretpassword@postgres:5432/excalidraw
     depends_on:
       - postgres
     networks:

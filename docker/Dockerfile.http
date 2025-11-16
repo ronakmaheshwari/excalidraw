@@ -1,46 +1,20 @@
-#----Base Stage-------
 FROM node:20-alpine AS base
-WORKDIR /usr/src/app
+WORKDIR /app
 
-# Install pnpm globally (Alpine)
 RUN corepack enable && corepack prepare pnpm@latest --activate
 
-# Copy manifest files for efficient caching
-COPY package.json pnpm-*.yaml turbo.json ./
-
-#Copy the dependent packages
+COPY ./package.json ./
+COPY ./pnpm-lock.yaml ./
+COPY ./pnpm-workspace.yaml  ./
+COPY ./turbo.json ./
 COPY ./packages ./packages
-COPY ./apps/http-backend/tsconfig.json ./apps/http-backend/tsconfig.json
-COPY ./apps/http-backend/package.json ./apps/http-backend/package.json
+COPY ./apps/http-backend ./apps/http
 
-#----Dependencies Stage-------
-FROM base AS deps
-RUN pnpm install 
+RUN pnpm install
 
-#----- Build Stage -----
-COPY ./apps/http-backend ./apps/http-backend
+RUN npm run generate:db
 
-#----- Build Stage -----
-FROM deps AS build
-RUN pnpm run generate:db
-RUN pnpm turbo run build --filter=apps/http-backend...
-
-# # ---- Production Stage ----
-FROM node:20-alpine AS prod
-WORKDIR /usr/src/app
-
-RUN corepack enable && corepack prepare pnpm@latest --activate
-
-# ----- Copy runtine dependencies -------
-COPY --from=deps /usr/src/app/node_modules ./node_modules
-COPY --from=build /usr/src/app/http-backend/dist ./apps/http-backend/dist
-
-# ------ Copy the Manifest files ------
-COPY ./package*.json ./
+RUN pnpm turbo build --filter=http-backend...
 
 EXPOSE 3000
-
-RUN addgroup -S app && adduser -S user -G app
-USER user
-
 CMD [ "npm","run","start:backend"]
