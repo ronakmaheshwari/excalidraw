@@ -5,25 +5,25 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build":"tsc -b",
+    "build": "tsc -b",
     "seed": "npx prisma db seed",
-    "reset":"npx prisma migrate reset"
+    "reset": "npx prisma migrate reset"
   },
   "exports": {
-      "./database": "./dist/index.js"
+    "./database": "./dist/index.js"
   },
-  "prisma":{
-    "seed":"ts-node prisma/seed.ts"
+  "prisma": {
+    "seed": "ts-node prisma/seed.ts"
   },
   "devDependencies": {
-    "@repo/typescript-config": "workspace:*"
+    "@repo/typescript-config": "workspace:*",
+    "@types/node": "^22.15.3"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@prisma/client": "^6.19.0",
-    "@types/node": "^22.15.3",
     "dotenv": "^17.2.3",
     "prisma": "^6.19.0",
     "ts-node": "^10.9.2",
