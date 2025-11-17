@@ -12,6 +12,8 @@
     "format": "prettier --write \"**/*.{ts,tsx,md}\"",
     "check-types": "turbo run check-types",
     "generate:db": "cd packages/db && npx prisma generate",
+    "seed:db":"pnpm --filter @repo/db seed", 
+    "reset:db":"pnpm --filter @repo/db reset",
     "start:frontend":"cd apps/web && npm run dev",
     "start:backend": "cd apps/http-backend && npm run dev",
     "start:ws": "cd apps/ws-backend && npm run dev"

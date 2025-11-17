@@ -39,6 +39,11 @@ wss.on('connection', function connection(ws,request) {
     return;
   }
 
+  if(!decoded || !decoded.userId){
+    ws.close();
+    return
+  }
+
   const user = decoded.userId;
 
   ws.on('message', function message(data) {

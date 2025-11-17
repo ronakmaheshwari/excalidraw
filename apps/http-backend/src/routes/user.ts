@@ -6,7 +6,9 @@ import bcrypt from "bcrypt"
 import jwt from "jsonwebtoken"
 import { jwtSecret, saltround } from "@repo/common/config";
 import { db } from "@repo/db/database";
-
+import userMiddleware from "../middleware.js";
+import dotenv from "dotenv"
+dotenv.config();
 const userRouter:Router = Router();
 
 const jwt_secret = jwtSecret;
@@ -15,7 +17,7 @@ if(!jwt_secret){
     throw ApiError.internal("JWT Secret was missing");
 }
 
-const rounds = saltround
+const rounds = saltround ?? process.env.SALTROUND
 
 if(!rounds){
     throw ApiError.internal("SALTROUND missing")
@@ -96,9 +98,9 @@ userRouter.post("/signin",async(req:Request,res:Response)=>{
     }
 })
 
-userRouter.post("/room",async(req:Request,res:Response)=>{
+userRouter.post("/create-room",userMiddleware,async(req:Request,res:Response)=>{
     try {
-        
+        const userId = req.userId
     } catch (error) {
         logError(500,`[USER SIGNIN]: error taken place ${error}`)
         throw ApiError.internal();

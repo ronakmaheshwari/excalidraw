@@ -51,7 +51,8 @@ export default async function userMiddleware(req:Request,res:Response,next:NextF
             logError(404,"Unauthroized user tried to access");
             throw ApiError.notFound()
         }
-        
+        req.userId = userId;
+        next()
     } catch (error) {
         logError(500,"HTTP User Middleware faced an error");
         throw ApiError.internal(`${error}`);
