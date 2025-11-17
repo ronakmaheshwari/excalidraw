@@ -1,11 +1,8 @@
 import { WebSocketServer } from 'ws';
 import jwt, { JwtPayload } from "jsonwebtoken"
-import dotenv from "dotenv"
 import { ApiError } from '@repo/logger/error';
 import { logError } from '@repo/logger';
 import { jwtSecret } from '@repo/common/config';
-
-dotenv.config();
 
 if(!jwtSecret){
     logError(500,"[WS]: JWT Secret was not provided");

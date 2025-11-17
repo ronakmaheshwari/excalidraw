@@ -7,8 +7,7 @@ import jwt from "jsonwebtoken"
 import { jwtSecret, saltround } from "@repo/common/config";
 import { db } from "@repo/db/database";
 import userMiddleware from "../middleware.js";
-import dotenv from "dotenv"
-dotenv.config();
+
 const userRouter:Router = Router();
 
 const jwt_secret = jwtSecret;
@@ -17,7 +16,7 @@ if(!jwt_secret){
     throw ApiError.internal("JWT Secret was missing");
 }
 
-const rounds = saltround ?? process.env.SALTROUND
+const rounds = saltround
 
 if(!rounds){
     throw ApiError.internal("SALTROUND missing")

@@ -14,9 +14,53 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+enum RoomRole {
+  ADMIN
+  EDITOR
+  VIEWER
+}
+
 model User {
   id String @id @default(uuid())
   name String
   email String @unique
   password String
+  avatarUrl String?
+  chat  Chat[]
+  rooms RoomMember[]
 }
+
+model Room {
+  id String @id @default(uuid())
+  slug String @unique //its shotrhand like Chemistry class
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  link      String? @unique
+  chat      Chat[]
+  members   RoomMember[]
+}
+
+model Chat {
+  id Int @id @default(autoincrement())
+  message String 
+  createdAt DateTime @default(now())
+
+  userId String 
+  roomId String
+  //ref
+  room Room @relation(fields: [roomId], references: [id])
+  user User @relation(fields: [userId], references: [id])
+}
+
+model RoomMember {
+  id String @id @default(uuid())
+  role RoomRole @default(VIEWER)
+  joinedAt DateTime @default(now())
+  userId String
+  roomId String
+  //ref
+  room Room @relation(fields: [roomId], references: [id])
+  user User @relation(fields: [userId], references: [id])
+
+  @@unique([userId,roomId])
+}  
