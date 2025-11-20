@@ -14,5 +14,5 @@ RUN pnpm install
 RUN npm run generate:db
 RUN pnpm turbo build --filter=ws-backend...
 
-EXPOSE 3000
+EXPOSE 3002
 CMD ["npm","run","start:ws"]
