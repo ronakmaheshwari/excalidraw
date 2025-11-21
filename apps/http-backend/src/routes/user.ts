@@ -27,9 +27,8 @@ const jwt_secret = jwtSecret;
 if(!jwt_secret){
     throw ApiError.internal("JWT Secret was missing");
 }
-
-const rounds = saltround
-if(!rounds){
+const rounds = Number(saltround) || 10;
+if(isNaN(rounds)){
     throw ApiError.internal("SALTROUND missing")
 }
 
@@ -45,6 +44,7 @@ function getStoragePath(publicUrl: string) {
 
 userRouter.post("/signup",async(req:Request,res:Response)=>{
     try {
+        console.log("req.body =", req.body);
         const parsedData = SignupSchema.safeParse(req.body);
         
         if(!parsedData.success){
@@ -63,7 +63,7 @@ userRouter.post("/signup",async(req:Request,res:Response)=>{
         if(findEmail){
             throw new ApiError(400,`The email ${email} provided already exists`)
         }
-        const hashedPassword =await bcrypt.hash(rounds,password);
+        const hashedPassword = await bcrypt.hash(password, rounds);
 
         const createUser = await db.user.create({
             data:{
